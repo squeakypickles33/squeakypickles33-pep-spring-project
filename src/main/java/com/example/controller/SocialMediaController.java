@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,6 +80,19 @@ public class SocialMediaController {
         try {
             Message message = messageService.getMessageByMessageId(messageId);
             return new ResponseEntity<Message>(message, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+    }
+    // - The deletion of an existing message should remove an existing message from the database. If the message existed, 
+    // the response body should contain the number of rows updated (1). The response status should be 200, which is the default.
+    // - If the message did not exist, the response status should be 200, but the response body should be empty. 
+    // This is because the DELETE verb is intended to be idempotent, ie, multiple calls to the DELETE endpoint should respond with the same type of response.
+    @DeleteMapping("/messages/{messageId}")
+    public ResponseEntity<Integer> deleteMessageByMessageId(@PathVariable Integer messageId) {
+        try {
+            Integer rowsAffected = messageService.deleteMessageByMessageId(messageId);
+            return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.OK);
         }

@@ -44,4 +44,13 @@ public class MessageService {
         Optional<Message> message = messageRepository.findById(id);
         return message.get();
     }
+
+    public Integer deleteMessageByMessageId(Integer id) {
+        try {
+            messageRepository.deleteById(id);
+            return 1;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
