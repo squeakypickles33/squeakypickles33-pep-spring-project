@@ -53,4 +53,21 @@ public class MessageService {
             return null;
         }
     }
+
+    public Integer updateMessageByMessageId(Integer id, Message newText) throws Exception {
+        try {
+            if (newText.getMessageText().isBlank() || newText.getMessageText().length() > 255) {
+                throw new IllegalArgumentException("Message is missing or longer than 255 characters.");
+            }
+            Optional<Message> existingMessage = messageRepository.findById(id);
+            if (existingMessage.isEmpty()) {
+                throw new Exception("Message not found");
+            }
+            existingMessage.get().setMessageText(newText.getMessageText());
+            messageRepository.save(existingMessage.get());
+            return 1;
+        } catch (Exception e) {
+            throw new Exception();
+        }
+    }
 }

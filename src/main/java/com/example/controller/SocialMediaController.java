@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -84,10 +85,7 @@ public class SocialMediaController {
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
     }
-    // - The deletion of an existing message should remove an existing message from the database. If the message existed, 
-    // the response body should contain the number of rows updated (1). The response status should be 200, which is the default.
-    // - If the message did not exist, the response status should be 200, but the response body should be empty. 
-    // This is because the DELETE verb is intended to be idempotent, ie, multiple calls to the DELETE endpoint should respond with the same type of response.
+
     @DeleteMapping("/messages/{messageId}")
     public ResponseEntity<Integer> deleteMessageByMessageId(@PathVariable Integer messageId) {
         try {
@@ -95,6 +93,20 @@ public class SocialMediaController {
             return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+    }
+
+    /* - The update of a message should be successful if and only if the message id already exists and the new messageText is not blank 
+    and is not over 255 characters. If the update is successful, the response body should contain the number of rows updated (1), 
+    and the response status should be 200, which is the default. The message existing on the database should have the updated messageText.
+    - If the update of the message is not successful for any reason, the response status should be 400. (Client error) */
+    @PatchMapping("/messages/{messageId}")
+    public ResponseEntity<Integer> updateMessageByMessageId(@PathVariable Integer messageId, @RequestBody Message newText) {
+        try {
+            Integer rowsAffected = messageService.updateMessageByMessageId(messageId, newText);
+            return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
