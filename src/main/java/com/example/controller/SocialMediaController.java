@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Account;
@@ -36,10 +37,10 @@ public class SocialMediaController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Account> login(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<Account> login(@RequestBody Account account) {
         try {
-            Account account = accountService.loginAccount(username, password);
-            return new ResponseEntity<>(account, HttpStatus.OK);
+            Account registeredAccount = accountService.loginAccount(account.getUsername(), account.getPassword());
+            return new ResponseEntity<>(registeredAccount, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }

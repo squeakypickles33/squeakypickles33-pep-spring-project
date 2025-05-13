@@ -26,14 +26,14 @@ public class AccountService {
         if (account.getUsername().isBlank() || account.getPassword().length() < 4) {
             throw new IllegalArgumentException("Invalid username or password is too short.");
         }
-        if (accountRepository.findByUsername(account.getUsername()).isPresent()) {
+        if (accountRepository.findAccountByUsername(account.getUsername()).isPresent()) {
             throw new Exception("Username already exists.");
         }
         return accountRepository.save(account);
     }
 
     public Account loginAccount(String username, String password) throws Exception {
-        Optional<Account> account = accountRepository.findByUsername(username);
+        Optional<Account> account = accountRepository.findAccountByUsername(username);
         if (account.isPresent() && account.get().getPassword().equals(password)) {
             return account.get();
         } else {
