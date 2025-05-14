@@ -70,4 +70,17 @@ public class MessageService {
             throw new Exception();
         }
     }
+
+    public List<Message> getAllMessagesByUser(Integer accountID) throws Exception {
+        try {
+            Optional<Account> existingAccount = accountRepository.findById(accountID);
+            if (existingAccount.isEmpty()) {
+                throw new Exception("Account not found");
+            }
+            Optional<List<Message>> allUserMessages = messageRepository.findMessagesByPostedBy(accountID);
+            return allUserMessages.get();
+        } catch (Exception e) {
+            throw new Exception();
+        }
+    }
 }

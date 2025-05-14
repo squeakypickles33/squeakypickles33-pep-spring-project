@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,10 +97,6 @@ public class SocialMediaController {
         }
     }
 
-    /* - The update of a message should be successful if and only if the message id already exists and the new messageText is not blank 
-    and is not over 255 characters. If the update is successful, the response body should contain the number of rows updated (1), 
-    and the response status should be 200, which is the default. The message existing on the database should have the updated messageText.
-    - If the update of the message is not successful for any reason, the response status should be 400. (Client error) */
     @PatchMapping("/messages/{messageId}")
     public ResponseEntity<Integer> updateMessageByMessageId(@PathVariable Integer messageId, @RequestBody Message newText) {
         try {
@@ -109,5 +106,15 @@ public class SocialMediaController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
+
+     @GetMapping("/accounts/{accountId}/messages")
+     public ResponseEntity<List<Message>> getMessagesByUser(@PathVariable Integer accountId) {
+        try {
+            List<Message> messagesByUser = messageService.getAllMessagesByUser(accountId);
+            return new ResponseEntity<>(messagesByUser, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+     }
 
 }
